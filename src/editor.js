@@ -23,6 +23,8 @@ export default class Editor extends EventHandler {
     // A bit roundabout way to figure out how many instances there are
     this.id = document.querySelectorAll(`.${this.options.toolbar.className}`).length;
     this.toolbar = new Toolbar(this.id, this.options.toolbar);
+
+    this.insertInitialParagraph();
     this.bindEvents();
   }
 
@@ -31,9 +33,23 @@ export default class Editor extends EventHandler {
 
     // There is a bug where clicking in a selection would not update
     // the range. Setting a timeout of 0 fixes it
-    this.on("mouseup", () => {
-      setTimeout(this.onMouseUp.bind(this), 0);
+    this.on("mouseup", (event) => {
+      setTimeout(this.onMouseUp.bind(this, event), 0);
     });
+  }
+
+  // So by default we have a contenteditable div but we
+  // don't want to write in the div directly so we put
+  // a p with a br inside so the user will click
+  insertInitialParagraph() {
+    this.element.innerHTML = "<p><br></p>";
+    const range = document.createRange();
+    const selection = document.getSelection();
+    const p = this.element.getElementsByTagName("p")[0];
+    range.setStart(p, 0);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
   }
 
   onMouseUp() {
@@ -52,6 +68,18 @@ export default class Editor extends EventHandler {
   // We assume it's a shortcut if meta/ctrl is pressed
   // TODO: handle escape on url toolbar
   onKeyDown(event) {
+    // This is pretty much only there to prevent us from removing
+    // the first paragraph
+    if (event.which === KEY_CODES.Backspace) {
+      // This is a bit ugly but works in firefox/chrome.
+      // Will need to be tested in IE/safari
+      if (this.element.innerHTML === "<p><br></p>") {
+        event.preventDefault();
+        return;
+      }
+    }
+
+    // And now let's have a look for shortcuts
     const isControlPressed = event.metaKey || event.ctrlKey;
     if (!isControlPressed) {
       return;

@@ -1,4 +1,6 @@
 export const KEY_CODES = {
+  Backspace: 8,
+  Enter: 13,
   B: 66,
   I: 73,
   U: 85,
