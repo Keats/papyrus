@@ -36,7 +36,7 @@ export default class Editor extends EventHandler {
     // Note: there is a bug where clicking in a selection would not update
     // the range. Setting a timeout of 0 fixes it
     this.onDocument("mouseup", () => {
-      setTimeout(this.onMouseUp.bind(this, event), 0);
+      setTimeout(this.onMouseUp.bind(this), 0);
     });
   }
 
