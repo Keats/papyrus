@@ -31,9 +31,11 @@ export default class Editor extends EventHandler {
   bindEvents() {
     this.on("keydown", this.onKeyDown.bind(this));
 
-    // There is a bug where clicking in a selection would not update
+    // We listen on the document to catch mouseups outside
+    // of the editor since the user could have started it inside
+    // Note: there is a bug where clicking in a selection would not update
     // the range. Setting a timeout of 0 fixes it
-    this.on("mouseup", (event) => {
+    this.onDocument("mouseup", () => {
       setTimeout(this.onMouseUp.bind(this, event), 0);
     });
   }
@@ -54,9 +56,9 @@ export default class Editor extends EventHandler {
 
   onMouseUp() {
     const selection = new Selection(this.element);
-    // It could be empty, aka collapsed or have only empty
-    // string in it
-    if (selection.isEmpty()) {
+    // It could be empty, aka collapsed, have only empty
+    // string in it or be completely outside of the editor
+    if (selection.isEmpty() || selection.isOutsideContentEditable()) {
       this.toolbar.hide();
       return;
     }

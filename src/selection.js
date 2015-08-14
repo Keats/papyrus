@@ -29,4 +29,21 @@ export default class Selection {
     console.log(tagName);
     return ["h1", "h2", "h3", "h4", "h5", "h6"].indexOf(tagName.toLowerCase()) > -1;
   }
+
+  // Since we listen to the whole document, we need
+  // to figure out if our selection is actually in contenteditable
+  isOutsideContentEditable() {
+    let parentNode = this.range.commonAncestorContainer;
+
+    while (parentNode !== null) {
+      if (parentNode === this.container) {
+        return false;
+      }
+      // whoa
+      parentNode = parentNode.parentNode;
+    }
+
+    return true;
+  }
 }
+

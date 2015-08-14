@@ -3,8 +3,6 @@
 
 ## TODOs
 
-- press enter -> new <p>
-- show toolbar when selection finishes outside of editor
 - position toolbar
 - url toolbar
 - clean/standardize html?
