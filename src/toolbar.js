@@ -43,7 +43,7 @@ export default class Toolbar extends EventHandler {
 
     const boundary = this.selection.range.getBoundingClientRect();
     const middleOfBoundary = (boundary.left + boundary.right) / 2;
-    const toolbarWidth = this.element.offsetWidth;
+    const middleOfToolbar = this.element.offsetWidth / 2;
     const toolbarHeight = this.element.offsetHeight;
 
     // diffTop represents how many pixels above/below the selection the toolbar is
@@ -52,11 +52,17 @@ export default class Toolbar extends EventHandler {
     // If there's no space for the toolbar above, we chuck it below
     if (boundary.top < (toolbarHeight + diffTop)) {
       top += boundary.bottom + diffTop;
+      this.element.classList.add(`${this.options.className}--below`);
     } else {
       top += boundary.top - toolbarHeight - diffTop;
+      this.element.classList.add(`${this.options.className}--above`);
     }
 
-    const left = middleOfBoundary - toolbarWidth / 2;
+    // Now onto the X axis, same thing
+    let left = 0;
+    if (middleOfBoundary > middleOfToolbar) {
+      left = middleOfBoundary - middleOfToolbar;
+    }
     this.element.style.top = `${top}px`;
     this.element.style.left = `${left}px`;
   }
@@ -72,6 +78,8 @@ export default class Toolbar extends EventHandler {
     this.selection = null;
     this.element.style.visibility = "hidden";
     this.element.classList.remove(`${this.options.className}--active`);
+    this.element.classList.remove(`${this.options.className}--below`);
+    this.element.classList.remove(`${this.options.className}--above`);
   }
 
   bindEvents() {
