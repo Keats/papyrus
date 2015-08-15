@@ -26,7 +26,6 @@ export default class Selection {
 
   isInHeader() {
     const tagName = this.range.commonAncestorContainer.parentNode.tagName;
-    console.log(tagName);
     return ["h1", "h2", "h3", "h4", "h5", "h6"].indexOf(tagName.toLowerCase()) > -1;
   }
 

@@ -24,12 +24,17 @@ export default class Editor extends EventHandler {
     this.id = document.querySelectorAll(`.${this.options.toolbar.className}`).length;
     this.toolbar = new Toolbar(this.id, this.options.toolbar);
 
-    this.insertInitialParagraph();
+    if (this.element.innerHTML === "") {
+      this.insertInitialParagraph();
+    }
     this.bindEvents();
   }
 
   bindEvents() {
     this.on("keydown", this.onKeyDown.bind(this));
+    // This one is needed to ensure we hide the toolbar if the user clicks
+    // in the editor
+    this.on("mousedown", this.onMouseDown.bind(this));
 
     // We listen on the document to catch mouseups outside
     // of the editor since the user could have started it inside
@@ -52,6 +57,10 @@ export default class Editor extends EventHandler {
     range.collapse(true);
     selection.removeAllRanges();
     selection.addRange(range);
+  }
+
+  onMouseDown() {
+    this.toolbar.hide();
   }
 
   onMouseUp() {

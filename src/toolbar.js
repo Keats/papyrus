@@ -35,8 +35,35 @@ export default class Toolbar extends EventHandler {
     return toolbar;
   }
 
+  _positionToolbar() {
+    // Reset the whole thing
+    this.element.style.position = "absolute";
+    this.element.style.left = 0;
+    this.element.style.top = 0;
+
+    const boundary = this.selection.range.getBoundingClientRect();
+    const middleOfBoundary = (boundary.left + boundary.right) / 2;
+    const toolbarWidth = this.element.offsetWidth;
+    const toolbarHeight = this.element.offsetHeight;
+
+    // diffTop represents how many pixels above/below the selection the toolbar is
+    const diffTop = 10;
+    let top = window.pageYOffset;
+    // If there's no space for the toolbar above, we chuck it below
+    if (boundary.top < (toolbarHeight + diffTop)) {
+      top += boundary.bottom + diffTop;
+    } else {
+      top += boundary.top - toolbarHeight - diffTop;
+    }
+
+    const left = middleOfBoundary - toolbarWidth / 2;
+    this.element.style.top = `${top}px`;
+    this.element.style.left = `${left}px`;
+  }
+
   show(selection) {
     this.selection = selection;
+    this._positionToolbar();
     this.element.style.visibility = "visible";
     this.element.classList.add(`${this.options.className}--active`);
   }

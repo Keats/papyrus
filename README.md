@@ -3,7 +3,6 @@
 
 ## TODOs
 
-- position toolbar
 - url toolbar
 - clean/standardize html?
 
